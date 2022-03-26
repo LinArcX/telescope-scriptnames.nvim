@@ -30,6 +30,6 @@ end
 return require("telescope").register_extension({
   exports = {
     -- Default when to argument is given, i.e. :Telescope scriptnames
-    env = run,
+    scriptnames = run,
   },
 })
