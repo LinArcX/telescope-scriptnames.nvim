@@ -3,24 +3,32 @@ local finders = require("telescope.finders")
 local conf = require("telescope.config").values
 
 local function prepare_output_table()
-  local lines = {}
-  local scripts = vim.api.nvim_command_output("scriptnames")
-
-  for script in scripts:gmatch("[^\r\n]+") do
-      table.insert(lines, script)
-  end
+  local scripts = vim.api.nvim_cmd({ cmd = "scriptnames" }, { output = true })
+  local lines = vim.split(scripts, "\r?\n")
   return lines
 end
 
 local function show_script_names(opts)
   opts = opts or {}
-  pickers.new(opts, {
-    prompt_title = "Script Names",
-    finder = finders.new_table {
-      results = prepare_output_table()
-    },
-    sorter = conf.generic_sorter(opts),
-  }):find()
+  pickers
+    .new(opts, {
+      prompt_title = "Script Names",
+      finder = finders.new_table({
+        results = prepare_output_table(),
+        entry_maker = function(entry)
+          local fname = entry:gsub("%s*%d+:%s", "")
+          return {
+            value = entry,
+            ordinal = entry,
+            display = entry,
+            filename = fname,
+          }
+        end,
+      }),
+      sorter = conf.file_sorter(opts),
+      previewer = conf.file_previewer(opts),
+    })
+    :find()
 end
 
 local function run()
