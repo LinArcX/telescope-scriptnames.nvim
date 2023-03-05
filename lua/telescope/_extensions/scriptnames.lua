@@ -10,13 +10,24 @@ end
 
 local function show_script_names(opts)
   opts = opts or {}
-  pickers.new(opts, {
-    prompt_title = "Script Names",
-    finder = finders.new_table {
-      results = prepare_output_table()
-    },
-    sorter = conf.generic_sorter(opts),
-  }):find()
+  pickers
+    .new(opts, {
+      prompt_title = "Script Names",
+      finder = finders.new_table({
+        results = prepare_output_table(),
+        entry_maker = function(entry)
+          local fname = entry:gsub("%s*%d+:%s", "")
+          return {
+            value = entry,
+            ordinal = entry,
+            display = entry,
+            filename = fname,
+          }
+        end,
+      }),
+      sorter = conf.generic_sorter(opts),
+    })
+    :find()
 end
 
 local function run()
