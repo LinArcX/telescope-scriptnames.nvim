@@ -3,12 +3,8 @@ local finders = require("telescope.finders")
 local conf = require("telescope.config").values
 
 local function prepare_output_table()
-  local lines = {}
-  local scripts = vim.api.nvim_command_output("scriptnames")
-
-  for script in scripts:gmatch("[^\r\n]+") do
-      table.insert(lines, script)
-  end
+  local scripts = vim.api.nvim_cmd({ cmd = "scriptnames" }, { output = true })
+  local lines = vim.split(scripts, "\r?\n")
   return lines
 end
 
