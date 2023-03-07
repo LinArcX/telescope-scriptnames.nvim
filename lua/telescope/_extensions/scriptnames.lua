@@ -26,6 +26,7 @@ local function show_script_names(opts)
         end,
       }),
       sorter = conf.generic_sorter(opts),
+      previewer = conf.file_previewer(opts),
     })
     :find()
 end
